@@ -1,0 +1,13 @@
+.country-info {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
+.title {
+  font-size: 30px;
+}
+
+.country-flag {
+  width: 250px;
+}

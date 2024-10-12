@@ -62,7 +62,7 @@ export class CountriesService {
           method: HttpMethod.GET,
         }
       )
-    ).data.filter(
+    ).data.find(
       (populationCountry) =>
         populationCountry.country === countryInfo.commonName
     );
@@ -74,9 +74,7 @@ export class CountriesService {
     return {
       ...countryInfo,
       flagUrl,
-      population: population.map(
-        (populationInfo) => populationInfo.populationCounts
-      ),
+      population: population.populationCounts,
     };
   }
 }

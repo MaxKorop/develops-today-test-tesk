@@ -8,7 +8,7 @@ type PopulationResponseDto = CountriesNowReposnseDto<
     populationCounts: {
       year: number;
       value: number;
-    };
+    }[];
   }[]
 >;
 
