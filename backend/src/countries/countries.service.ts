@@ -1,34 +1,12 @@
 import { Injectable } from '@nestjs/common';
-import { AvailableCountryDto, CountryInfoDto } from './dto/country.dto';
-
-type NagerCountryInfo = Omit<CountryInfoDto, 'flagUrl' | 'population'>;
-
-type CountriesNowReposnseDto<T> = {
-  error: boolean;
-  msg: string;
-  data: T;
-};
-
-type CountriesNowFlagsDto = CountriesNowReposnseDto<
-  {
-    name: string;
-    flag: string;
-    iso2: string;
-    iso3: string;
-  }[]
->;
-
-type CountriesNowPopulationDto = CountriesNowReposnseDto<
-  {
-    country: string;
-    code3: string;
-    iso3: string;
-    populationCounts: {
-      year: number;
-      value: number;
-    };
-  }[]
->;
+import {
+  type AvailableCountryResponseDto,
+  type CountryInfoResponseDto,
+  type FlagsResponseDto,
+  type NagerCountryInfo,
+  type PopulationResponseDto,
+} from './libs/dto/dto';
+import { HttpMethod } from './libs/enums/enums';
 
 @Injectable()
 export class CountriesService {
@@ -64,34 +42,30 @@ export class CountriesService {
     return this.makeRequest<T>(this.baseNagerPath, path, options);
   }
 
-  async getAvailableCountries(): Promise<AvailableCountryDto[]> {
-    return await this.makeRequestToNagerApi<AvailableCountryDto[]>(
+  async getAvailableCountries(): Promise<AvailableCountryResponseDto[]> {
+    return await this.makeRequestToNagerApi<AvailableCountryResponseDto[]>(
       'AvailableCountries'
     );
   }
 
-  async getCountryInfo(countryCode: string): Promise<CountryInfoDto> {
+  async getCountryInfo(countryCode: string): Promise<CountryInfoResponseDto> {
     const countryInfo = await this.makeRequestToNagerApi<NagerCountryInfo>(
       `CountryInfo/${countryCode}`
     );
     const flags =
-      await this.makeRequestToCountriesNowApi<CountriesNowFlagsDto>(
-        'flag/images'
-      );
+      await this.makeRequestToCountriesNowApi<FlagsResponseDto>('flag/images');
 
     const population = (
-      await this.makeRequestToCountriesNowApi<CountriesNowPopulationDto>(
+      await this.makeRequestToCountriesNowApi<PopulationResponseDto>(
         'population',
         {
-          method: 'GET',
+          method: HttpMethod.GET,
         }
       )
     ).data.filter(
       (populationCountry) =>
         populationCountry.country === countryInfo.commonName
     );
-
-    console.log(population);
 
     const flagUrl = flags.data.filter(
       (countryWithFlag) => countryWithFlag.iso2 === countryCode
