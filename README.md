@@ -1,9 +1,9 @@
 ## The Country Info App
 
-App was developed using
+App developed using
 
 - Backend: Nest.js
-- Frontend: React.js + Vite
+- Frontend: React.js + Vite, Redux, Recharts
 
 ### How to run
 
